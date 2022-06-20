@@ -1,0 +1,10 @@
+name: PurityKits
+main: com.purityvanilla.puritykits.PurityKits
+version: 1.0
+api-version: 1.18
+commands:
+  kit:
+    aliases: k
+    permission: puritykits.kitcommand
+  reload:
+    permission: puritykits.reload
