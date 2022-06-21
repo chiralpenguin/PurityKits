@@ -7,7 +7,7 @@ import java.util.HashMap;
 
 public class KitRoomGUI extends GUIWindow {
 
-    public KitRoomGUI(Player player) {
+    public KitRoomGUI() {
         invTitle = "&a&l&nKit Room";
         createInventory(54);
 

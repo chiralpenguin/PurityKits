@@ -29,7 +29,7 @@ public class KitsGUI extends GUIWindow {
                 slotObject = guiObjects.get("LockedPersonalKit");
             }
 
-            inventory.setItem(slot, GUIObject.SetNumberInDisplayname(slotObject.createItem(), i));
+            inventory.setItem(slot, GUIObject.SetKitNumberMeta(slotObject.createItem(), i));
         }
 
         inventory.setItem(28, guiObjects.get("KitRoom").createItem());
@@ -54,8 +54,13 @@ public class KitsGUI extends GUIWindow {
 
         switch (objectId) {
             case "KitRoom":
-                KitRoomGUI kitRoomGUI = new KitRoomGUI(player);
-                kitRoomGUI.openGUI(player);
+                new KitRoomGUI().openGUI(player);
+
+            case "PersonalKit":
+                if (event.isRightClick()) {
+                    int kitNumber = GUIObject.GetKitNumberMeta(clickedItem);
+                    new KitEditorGUI(player, kitNumber).openGUI(player);
+                }
 
         }
     }

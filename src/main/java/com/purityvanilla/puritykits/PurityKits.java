@@ -7,6 +7,7 @@ import com.purityvanilla.puritykits.gui.GUIObject;
 import com.purityvanilla.puritykits.kits.PlayerKitsManager;
 import com.purityvanilla.puritykits.listeners.InventoryClickListener;
 import com.purityvanilla.puritykits.listeners.PlayerJoinListener;
+import com.purityvanilla.puritykits.listeners.PlayerQuitListener;
 import com.purityvanilla.puritykits.util.DataFile;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -34,6 +35,7 @@ public class PurityKits extends JavaPlugin {
         guiObjectsData.save(guiObjects);
 
         getServer().getPluginManager().registerEvents(new PlayerJoinListener(), this);
+        getServer().getPluginManager().registerEvents(new PlayerQuitListener(), this);
         getServer().getPluginManager().registerEvents(new InventoryClickListener(), this);
 
         getCommand("kit").setExecutor(new KitCommand());
