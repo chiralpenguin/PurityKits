@@ -48,15 +48,17 @@ public class KitEditorGUI extends GUIWindow {
         Player player = (Player) event.getWhoClicked();
 
         switch (objectId) {
+            case "KitEditor_Undo":
+                new KitsGUI(player).openGUI(player);
+                break;
+
             case "ExitMenu":
                 ItemStack[] kitItems = Arrays.copyOfRange(inventory.getContents(), 0, 41);
                 PlayerKitsManager kitsManager = PurityKits.INSTANCE.getKitsManager();
                 kitsManager.setKitContents(player, kitNumber, kitItems);
                 kitsManager.savePlayerKits(player);
                 new KitsGUI(player).openGUI(player);
-
-            case "KitEditor_Undo":
-                new KitsGUI(player).openGUI(player);
+                break;
 
         }
 

@@ -1,13 +1,23 @@
 package com.purityvanilla.puritykits.gui;
 
 import com.purityvanilla.puritykits.PurityKits;
+import com.purityvanilla.puritykits.kits.KitRoomManager;
+import com.purityvanilla.puritykits.kits.PlayerKitsManager;
+import org.apache.commons.lang.ArrayUtils;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.ItemFlag;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 
+import java.util.Arrays;
 import java.util.HashMap;
 
 public class KitRoomGUI extends GUIWindow {
+    protected int currentPage;
 
-    public KitRoomGUI() {
+    public KitRoomGUI(Player player) {
         invTitle = "&a&l&nKit Room";
         createInventory(54);
 
@@ -19,6 +29,87 @@ public class KitRoomGUI extends GUIWindow {
         inventory.setItem(49, guiObjects.get("KitRoom_Consumables").createItem());
         inventory.setItem(50, guiObjects.get("KitRoom_Ammunition").createItem());
         inventory.setItem(51, guiObjects.get("KitRoom_Explosives").createItem());
+        inventory.setItem(53, guiObjects.get("KitRoom_Restock").createItem());
+
+        for (int i = 47; i < 52; i++) {
+            ItemStack item = inventory.getItem(i);
+            item.addItemFlags(new ItemFlag[] { ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_POTION_EFFECTS});
+            inventory.setItem(i, item);
+        }
+
+        if (player.hasPermission("puritykits.editkitroom")) {
+            inventory.setItem(46, guiObjects.get("KitRoom_Save").createItem());
+        }
+
+        currentPage = -1;
+        GotoPage(1);
+    }
+
+    public void GotoPage(int page) {
+        int slotOffset = 46;
+        if (currentPage != -1) {
+         inventory.getItem(currentPage + slotOffset).removeEnchantment(Enchantment.MENDING);
+        }
+
+        int pageSlot = page + slotOffset;
+        inventory.getItem(pageSlot).addUnsafeEnchantment(Enchantment.MENDING, 1);
+
+        KitRoomManager kitRoomManager = PurityKits.INSTANCE.getKitRoomManager();
+        ItemStack[] contents = kitRoomManager.GetPageContents(page);
+        ItemStack[] menuItems = Arrays.copyOfRange(inventory.getContents(), 45, 53);
+        inventory.setContents((ItemStack[]) ArrayUtils.addAll(contents, menuItems));
+
+        currentPage = page;
+    }
+
+    @Override
+    public void onClick(InventoryClickEvent event) {
+
+        if (event.getRawSlot() > 40 && !(event.getClickedInventory() instanceof PlayerInventory)) {
+            event.setCancelled(true);
+        }
+
+        ItemStack clickedItem = event.getCurrentItem();
+        if (clickedItem == null) {
+            return;
+        }
+
+        String objectId = GUIObject.getIdFromItem(clickedItem);
+        if (objectId == null) {
+            return;
+        }
+
+        switch(objectId) {
+            case "ExitMenu":
+                Player player = (Player) event.getWhoClicked();
+                new KitsGUI(player).openGUI(player);
+                break;
+
+            case "KitRoom_Save":
+                KitRoomManager kitRoomManager = PurityKits.INSTANCE.getKitRoomManager();
+                ItemStack[] contents = Arrays.copyOfRange(inventory.getContents(), 0, 45);
+                kitRoomManager.SetPageContents(contents, currentPage);
+
+            case "KitRoom_Armoury":
+                GotoPage(1);
+                break;
+
+            case "KitRoom_Potions":
+                GotoPage(2);
+                break;
+
+            case "KitRoom_Consumables":
+                GotoPage(3);
+                break;
+
+            case "KitRoom_Ammunition":
+                GotoPage(4);
+                break;
+
+            case "KitRoom_Explosives":
+                GotoPage(5);
+                break;
+        }
 
     }
 }

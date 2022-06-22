@@ -3,63 +3,87 @@ package com.purityvanilla.puritykits.kits;
 import com.google.common.reflect.TypeToken;
 import com.purityvanilla.puritykits.PurityKits;
 import com.purityvanilla.puritykits.util.DataFile;
-import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 public class PlayerKitsManager {
-
     private HashMap<UUID, HashMap<Integer, PlayerKit>> kitMap;
     private String KIT_DATA_PATH = "plugins/PurityKits/playerkits/";
-
 
     public PlayerKitsManager() {
         this.kitMap = new HashMap<>();
     }
 
-    public void initPlayerKits(Player player){
+    public void initPlayerKits(UUID uuid){
         HashMap<Integer, PlayerKit> playerKitMap = new HashMap<>();
 
         for (int i = 1; i <= 7; i++) {
             playerKitMap.put(i, new PlayerKit(i));
         }
 
-        kitMap.put(player.getUniqueId(), playerKitMap);
-        if (PurityKits.config.verbose()) PurityKits.logger().info(String.format("Initialised kits for player: %s", PlainTextComponentSerializer.plainText().serialize(player.displayName())));
+        kitMap.put(uuid, playerKitMap);
+        if (PurityKits.config.verbose()) PurityKits.logger().info(String.format("Initialised kits for player: %s", uuid));
     }
 
     public void loadPlayerKits(Player player) {
-        UUID uuid = player.getUniqueId();
+        loadPlayerKits(player.getUniqueId());
+    }
 
+    public void loadPlayerKits(UUID uuid) {
         DataFile datafile = new DataFile(KIT_DATA_PATH + uuid + ".json", new TypeToken<HashMap<Integer, PlayerKit>>(){}.getType());
         HashMap<Integer, PlayerKit> playerKitMap = datafile.load();
 
         if (playerKitMap.equals(new HashMap<Integer, PlayerKit>())) {
-            initPlayerKits(player);
+            initPlayerKits(uuid);
         } else {
             kitMap.put(uuid, playerKitMap);
-            if (PurityKits.config.verbose()) PurityKits.logger().info(String.format("Loaded kits for player: %s", PlainTextComponentSerializer.plainText().serialize(player.displayName())));
+            if (PurityKits.config.verbose()) PurityKits.logger().info(String.format("Loaded kits for player: %s", uuid));
         }
     }
 
     public void savePlayerKits(Player player) {
-        UUID uuid = player.getUniqueId();
+        savePlayerKits(player.getUniqueId());
+    }
 
+    public void savePlayerKits(UUID uuid) {
         HashMap<Integer, PlayerKit> playerKitMap = kitMap.get(uuid);
         DataFile datafile = new DataFile(KIT_DATA_PATH + uuid + ".json", new TypeToken<HashMap<Integer, PlayerKit>>(){}.getType());
 
         datafile.save(playerKitMap);
-        if (PurityKits.config.verbose()) PurityKits.logger().info(String.format("Saved kits for player: %s", PlainTextComponentSerializer.plainText().serialize(player.displayName())));
+        if (PurityKits.config.verbose()) PurityKits.logger().info(String.format("Saved kits for player: %s", uuid));
     }
 
     public void unloadPlayerKits(Player player) {
-        savePlayerKits(player);
+        unloadPlayerKits(player.getUniqueId());
+    }
 
-        kitMap.remove(player.getUniqueId());
-        if (PurityKits.config.verbose()) PurityKits.logger().info(String.format("Unloaded kits for player: %s", PlainTextComponentSerializer.plainText().serialize(player.displayName())));
+    public void unloadPlayerKits(UUID uuid) {
+        savePlayerKits(uuid);
+
+        kitMap.remove(uuid);
+        if (PurityKits.config.verbose()) PurityKits.logger().info(String.format("Unloaded kits for player: %s", uuid));
+    }
+
+    public void loadAllPlayerKits() {
+        List<UUID> playerIDs = new ArrayList<>();
+        File[] files = new File(KIT_DATA_PATH).listFiles();
+
+        for (File file : files) {
+            if (file.isFile()) {
+                String id = file.getName().substring(0, file.getName().lastIndexOf('.'));
+                playerIDs.add(UUID.fromString(id));
+            }
+        }
+
+        for (UUID uuid : playerIDs) {
+            loadPlayerKits(uuid);
+        }
     }
 
     public String getKitName(Player player, int kitNumber) {

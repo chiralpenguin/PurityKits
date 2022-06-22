@@ -54,13 +54,15 @@ public class KitsGUI extends GUIWindow {
 
         switch (objectId) {
             case "KitRoom":
-                new KitRoomGUI().openGUI(player);
+                new KitRoomGUI(player).openGUI(player);
+                break;
 
             case "PersonalKit":
                 if (event.isRightClick()) {
                     int kitNumber = GUIObject.GetKitNumberMeta(clickedItem);
                     new KitEditorGUI(player, kitNumber).openGUI(player);
                 }
+                break;
 
         }
     }

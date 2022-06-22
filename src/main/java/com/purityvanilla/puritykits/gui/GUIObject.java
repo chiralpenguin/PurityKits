@@ -52,7 +52,6 @@ public class GUIObject {
         return itemStack;
     }
 
-
     public static HashMap<String, GUIObject> InitGuiObjectMap() {
         HashMap<String, GUIObject> guiObjects = new HashMap<>();
 
@@ -69,19 +68,25 @@ public class GUIObject {
                 new ArrayList<>(), "ExitMenu"));
 
         guiObjects.put("KitRoom_Armoury", new GUIObject("&bArmoury", "NETHERITE_SWORD", 1,
-                new ArrayList<>(Arrays.asList("")), "KitRoom_Armoury"));
+                new ArrayList<>(), "KitRoom_Armoury"));
 
         guiObjects.put("KitRoom_Potions", new GUIObject("&bPotions", "SPLASH_POTION", 1,
-                new ArrayList<>(Arrays.asList("")), "KitRoom_Potions"));
+                new ArrayList<>(), "KitRoom_Potions"));
 
         guiObjects.put("KitRoom_Consumables", new GUIObject("&bConsumables", "ENDER_PEARL", 1,
                 new ArrayList<>(), "KitRoom_Consumables"));
 
         guiObjects.put("KitRoom_Ammunition", new GUIObject("&bAmmunition", "TIPPED_ARROW", 1,
-                new ArrayList<>(Arrays.asList("")), "KitRoom_Ammunition"));
+                new ArrayList<>(), "KitRoom_Ammunition"));
 
         guiObjects.put("KitRoom_Explosives", new GUIObject("&bExplosives", "RESPAWN_ANCHOR", 1,
                 new ArrayList<>(), "KitRoom_Explosives"));
+
+        guiObjects.put("KitRoom_Restock", new GUIObject("&e&lRestock", "STRUCTURE_VOID", 1,
+                new ArrayList<>(), "KitRoom_Restock"));
+
+        guiObjects.put("KitRoom_Save", new GUIObject("&a&lSave Page", "EMERALD_BLOCK", 1,
+                new ArrayList<>(), "KitRoom_Save"));
 
         guiObjects.put("KitEditor_Import", new GUIObject("&a&lImport Inventory", "CHEST", 1,
                 new ArrayList<>(), "KitEditor_Import"));
