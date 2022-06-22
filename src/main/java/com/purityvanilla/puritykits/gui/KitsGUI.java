@@ -58,9 +58,13 @@ public class KitsGUI extends GUIWindow {
                 break;
 
             case "PersonalKit":
+                int kitNumber = GUIObject.GetKitNumberMeta(clickedItem);
+
                 if (event.isRightClick()) {
-                    int kitNumber = GUIObject.GetKitNumberMeta(clickedItem);
                     new KitEditorGUI(player, kitNumber).openGUI(player);
+                }
+                if (event.isLeftClick()) {
+                    PurityKits.INSTANCE.getKitsManager().claimKit(player, kitNumber);
                 }
                 break;
 

@@ -7,6 +7,7 @@ import com.purityvanilla.puritykits.gui.GUIObject;
 import com.purityvanilla.puritykits.kits.KitRoomManager;
 import com.purityvanilla.puritykits.kits.PlayerKitsManager;
 import com.purityvanilla.puritykits.listeners.InventoryClickListener;
+import com.purityvanilla.puritykits.listeners.InventoryCloseListener;
 import com.purityvanilla.puritykits.listeners.PlayerJoinListener;
 import com.purityvanilla.puritykits.listeners.PlayerQuitListener;
 import com.purityvanilla.puritykits.util.DataFile;
@@ -40,6 +41,7 @@ public class PurityKits extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new PlayerJoinListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerQuitListener(), this);
         getServer().getPluginManager().registerEvents(new InventoryClickListener(), this);
+        getServer().getPluginManager().registerEvents(new InventoryCloseListener(), this);
 
         getCommand("kit").setExecutor(new KitCommand());
         getCommand("reload").setExecutor(new ReloadCommand());

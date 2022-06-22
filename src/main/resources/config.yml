@@ -2,3 +2,7 @@
 # Written by chiralpenguin for the Purity Network
 # Based on "PlayerKits" by Ajneb97 - https://github.com/Ajneb97/PlayerKits
 verbose: false
+messages:
+  kitclaim: "&9[&b&lPurity Kits&9] &aLoaded \"&b&l{kitname}&a\"."
+  kitclaim_fail: "&9[&b&lPurity Kits&9] &cCould not load kit! (Invalid kit number)."
+  kitclaim_no_access: "&9[&b&lPurity Kits&9] &cYou do not have access to \"&b&l{kitname}&c\"."

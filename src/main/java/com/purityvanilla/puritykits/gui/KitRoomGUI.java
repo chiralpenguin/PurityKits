@@ -2,7 +2,6 @@ package com.purityvanilla.puritykits.gui;
 
 import com.purityvanilla.puritykits.PurityKits;
 import com.purityvanilla.puritykits.kits.KitRoomManager;
-import com.purityvanilla.puritykits.kits.PlayerKitsManager;
 import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -65,7 +64,7 @@ public class KitRoomGUI extends GUIWindow {
     @Override
     public void onClick(InventoryClickEvent event) {
 
-        if (event.getRawSlot() > 40 && !(event.getClickedInventory() instanceof PlayerInventory)) {
+        if (event.getRawSlot() > 44 && !(event.getClickedInventory() instanceof PlayerInventory)) {
             event.setCancelled(true);
         }
 
@@ -89,6 +88,7 @@ public class KitRoomGUI extends GUIWindow {
                 KitRoomManager kitRoomManager = PurityKits.INSTANCE.getKitRoomManager();
                 ItemStack[] contents = Arrays.copyOfRange(inventory.getContents(), 0, 45);
                 kitRoomManager.SetPageContents(contents, currentPage);
+                break;
 
             case "KitRoom_Armoury":
                 GotoPage(1);

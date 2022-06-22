@@ -1,5 +1,8 @@
 package com.purityvanilla.puritykits;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import org.bukkit.command.CommandExecutor;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
@@ -10,11 +13,14 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Config {
     private final YamlConfigurationLoader configLoader;
     private final String FNAME = "plugins/PurityKits/config.yml";
     private Boolean verbose;
+    private HashMap<String, String> messageMap;
 
     public Config() {
         File file = new File(FNAME);
@@ -40,10 +46,28 @@ public class Config {
 
         verbose = root.node("verbose").getBoolean();
 
+        messageMap = new HashMap<>();
+        Map<Object, CommentedConfigurationNode> messages = root.node("messages").childrenMap();
+        for (Map.Entry<Object, CommentedConfigurationNode> message : messages.entrySet()) {
+            messageMap.put(message.getKey().toString(), message.getValue().getString());
+        }
+
     }
 
     public Boolean verbose() {
         return verbose;
+    }
+
+    public String KitClaimMessage() {
+        return messageMap.get("kitclaim");
+    }
+
+    public String KitClaimFailMessage() {
+        return messageMap.get("kitclaim_fail");
+    }
+
+    public String KitClaimNoAccessMessage() {
+        return messageMap.get("kitclaim_no_access");
     }
 
 }

@@ -3,6 +3,7 @@ package com.purityvanilla.puritykits.kits;
 import com.google.common.reflect.TypeToken;
 import com.purityvanilla.puritykits.PurityKits;
 import com.purityvanilla.puritykits.util.DataFile;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -18,6 +19,7 @@ public class PlayerKitsManager {
 
     public PlayerKitsManager() {
         this.kitMap = new HashMap<>();
+        new File(KIT_DATA_PATH).mkdirs();
     }
 
     public void initPlayerKits(UUID uuid){
@@ -86,12 +88,49 @@ public class PlayerKitsManager {
         }
     }
 
+    public void claimKit(Player player, int kitNumber) {
+        claimKit(player, player.getUniqueId(), kitNumber);
+    }
+
+    public void claimKit(Player player, UUID kitOwner, int kitNumber) {
+
+        if (player.getUniqueId() == kitOwner) {
+            int availableKits = 3;
+            if (player.hasPermission("puritykits.morekits")) availableKits = 5;
+            if (player.hasPermission("puritykits.allkits")) availableKits = 7;
+
+            if (kitNumber > availableKits) {
+                player.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(
+                        PurityKits.config.KitClaimNoAccessMessage().replace("{kitname}", getKitName(kitOwner, kitNumber))
+                ));
+                return;
+            }
+
+            ItemStack[] kitContents = getKitContents(kitOwner, kitNumber);
+            player.getInventory().setContents(kitContents);
+            player.updateInventory();
+            player.closeInventory();
+            player.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(
+                    PurityKits.config.KitClaimMessage().replace("{kitname}", getKitName(kitOwner, kitNumber))
+            ));
+        }
+
+    }
+
     public String getKitName(Player player, int kitNumber) {
-        return kitMap.get(player.getUniqueId()).get(kitNumber).getName();
+        return getKitName(player.getUniqueId(), kitNumber);
+    }
+
+    public String getKitName(UUID player, int kitNumber) {
+        return kitMap.get(player).get(kitNumber).getName();
     }
 
     public ItemStack[] getKitContents(Player player, int kitNumber) {
-        return kitMap.get(player.getUniqueId()).get(kitNumber).getKitContents();
+        return getKitContents(player.getUniqueId(), kitNumber);
+    }
+
+    public ItemStack[] getKitContents(UUID player, int kitNumber) {
+        return kitMap.get(player).get(kitNumber).getKitContents();
     }
 
     public void setKitContents(Player player, int kitNumber, ItemStack[] contents) {
