@@ -3,10 +3,12 @@ package com.purityvanilla.puritykits.kits;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.potion.PotionData;
+import org.bukkit.potion.PotionType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,7 +19,9 @@ public class KitItem {
     private int amount;
     private String name;
     private List<String> lore;
-    private HashMap<NamespacedKey, Integer> enchantments;
+    private HashMap<String, Integer> enchantments;
+    private PotionType potionType;
+    private int potionLevel;
 
     public KitItem(String materialType, int amount, String name, List<String> lore) {
         this.materialType = materialType;
@@ -33,7 +37,7 @@ public class KitItem {
         if (itemStack.getEnchantments().size() != 0) {
             this.enchantments = new HashMap<>();
             itemStack.getEnchantments().forEach((enchant, lvl) -> {
-                this.enchantments.put(enchant.getKey(), lvl);
+                this.enchantments.put(enchant.getName(), lvl); // Aware this is deprecated, will get namespacedkeys working eventually...
             });
         }
 
@@ -48,6 +52,23 @@ public class KitItem {
                 this.lore.add(LegacyComponentSerializer.legacyAmpersand().serialize(loreLine));
             }
         }
+
+        if (itemMeta instanceof PotionMeta) {
+            PotionMeta pMeta = (PotionMeta) itemMeta;
+            PotionData pData = pMeta.getBasePotionData();
+            int level = 0;
+            potionType = pData.getType();
+
+            if (pData.isUpgraded()) {
+                level = level + 1;
+            }
+
+            if (pData.isExtended()) {
+                level = level + 2;
+            }
+
+            this.potionLevel = level;
+        }
     }
 
     public ItemStack getItemStack() {
@@ -55,7 +76,7 @@ public class KitItem {
 
         if (this.enchantments != null) {
             enchantments.forEach((enchant, lvl) -> {
-                itemStack.addEnchantment(Enchantment.getByKey(enchant), lvl);
+                itemStack.addEnchantment(Enchantment.getByName(enchant), lvl);
             });
         }
 
@@ -71,6 +92,29 @@ public class KitItem {
                 lore.add(LegacyComponentSerializer.legacyAmpersand().deserialize(loreLine));
             }
             itemMeta.lore(lore);
+        }
+
+        if (this.potionType != null) {
+            PotionMeta potionMeta = (PotionMeta) itemMeta;
+            switch (potionLevel) {
+                case 0:
+                    potionMeta.setBasePotionData(new PotionData(potionType));
+                    break;
+
+                case 1:
+                    potionMeta.setBasePotionData(new PotionData(potionType, false, true));
+                    break;
+
+                case 2:
+                    potionMeta.setBasePotionData(new PotionData(potionType, true, false));
+                    break;
+
+                case 3:
+                    potionMeta.setBasePotionData(new PotionData(potionType, true, true));
+                    break;
+            }
+
+            itemStack.setItemMeta(potionMeta);
         }
 
         itemStack.setItemMeta(itemMeta);

@@ -24,7 +24,7 @@ public class KitRoomManager {
         kitRoomMap = new HashMap<>();
         PurityKits.logger().info("Initialising KitRoom.json");
 
-        for (int i = 1; i <= 5; i ++) {
+        for (int i = 1; i <= 7; i ++) {
             kitRoomMap.put(i, new HashMap<>());
         }
     }

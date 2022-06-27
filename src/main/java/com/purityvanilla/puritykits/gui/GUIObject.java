@@ -67,11 +67,17 @@ public class GUIObject {
         guiObjects.put("ExitMenu", new GUIObject("&c&lMain Menu", "OAK_DOOR", 1,
                 new ArrayList<>(), "ExitMenu"));
 
-        guiObjects.put("KitRoom_Armoury", new GUIObject("&bArmoury", "NETHERITE_SWORD", 1,
+        guiObjects.put("KitRoom_Weaponry", new GUIObject("&bWeaponry", "NETHERITE_SWORD", 1,
+                new ArrayList<>(), "KitRoom_Weaponry"));
+
+        guiObjects.put("KitRoom_Armoury", new GUIObject("&bArmoury", "NETHERITE_CHESTPLATE", 1,
                 new ArrayList<>(), "KitRoom_Armoury"));
 
-        guiObjects.put("KitRoom_Potions", new GUIObject("&bPotions", "SPLASH_POTION", 1,
-                new ArrayList<>(), "KitRoom_Potions"));
+        guiObjects.put("KitRoom_Potions_1", new GUIObject("&bPotions I", "POTION", 1,
+                new ArrayList<>(), "KitRoom_Potions_1"));
+
+        guiObjects.put("KitRoom_Potions_2", new GUIObject("&bPotions II", "SPLASH_POTION", 1,
+                new ArrayList<>(), "KitRoom_Potions_2"));
 
         guiObjects.put("KitRoom_Consumables", new GUIObject("&bConsumables", "ENDER_PEARL", 1,
                 new ArrayList<>(), "KitRoom_Consumables"));
