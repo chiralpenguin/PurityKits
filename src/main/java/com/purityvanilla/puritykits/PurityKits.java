@@ -3,15 +3,15 @@ package com.purityvanilla.puritykits;
 import com.google.common.reflect.TypeToken;
 import com.purityvanilla.puritykits.commands.KitCommand;
 import com.purityvanilla.puritykits.commands.ReloadCommand;
+import com.purityvanilla.puritykits.commands.SpawnCommand;
 import com.purityvanilla.puritykits.gui.GUIObject;
 import com.purityvanilla.puritykits.kits.KitRoomManager;
 import com.purityvanilla.puritykits.kits.PlayerKitsManager;
-import com.purityvanilla.puritykits.listeners.InventoryClickListener;
-import com.purityvanilla.puritykits.listeners.InventoryCloseListener;
-import com.purityvanilla.puritykits.listeners.PlayerJoinListener;
-import com.purityvanilla.puritykits.listeners.PlayerQuitListener;
+import com.purityvanilla.puritykits.listeners.*;
+import com.purityvanilla.puritykits.tasks.UpdateCooldown;
 import com.purityvanilla.puritykits.util.DataFile;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.util.HashMap;
 import java.util.logging.Logger;
@@ -25,6 +25,7 @@ public class PurityKits extends JavaPlugin {
     private String DATA_PATH = "plugins/PurityKits/";
     private HashMap<String, GUIObject> guiObjects;
     private DataFile guiObjectsData;
+    public BukkitTask updateCooldownTask;
 
     @Override
     public void onEnable() {
@@ -42,11 +43,16 @@ public class PurityKits extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new PlayerQuitListener(), this);
         getServer().getPluginManager().registerEvents(new InventoryClickListener(), this);
         getServer().getPluginManager().registerEvents(new InventoryCloseListener(), this);
+        getServer().getPluginManager().registerEvents(new PlayerPostRespawnListener(), this);
 
         getCommand("kit").setExecutor(new KitCommand());
+        getCommand("spawn").setExecutor(new SpawnCommand());
         getCommand("reload").setExecutor(new ReloadCommand());
 
-        kitsManager.loadAllPlayerKits();
+        if (config.cooldownEnabled()) {
+            updateCooldownTask = new UpdateCooldown().runTaskTimer(this, 20L, 20L);
+        }
+
     }
 
     @Override

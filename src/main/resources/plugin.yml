@@ -6,5 +6,7 @@ commands:
   kit:
     aliases: k
     permission: puritykits.kitcommand
+  spawn:
+    permission: puritykits.spawn
   reload:
     permission: puritykits.reload

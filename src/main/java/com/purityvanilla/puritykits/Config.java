@@ -20,6 +20,9 @@ public class Config {
     private final YamlConfigurationLoader configLoader;
     private final String FNAME = "plugins/PurityKits/config.yml";
     private Boolean verbose;
+    private Boolean cooldownEnabled;
+    private int cooldown;
+    private String spawnWorld;
     private HashMap<String, String> messageMap;
 
     public Config() {
@@ -46,6 +49,11 @@ public class Config {
 
         verbose = root.node("verbose").getBoolean();
 
+        cooldownEnabled = root.node("kit-cooldown").getBoolean();
+        cooldown = root.node("cooldown-time").getInt();
+
+        spawnWorld = root.node("spawn-world").getString();
+
         messageMap = new HashMap<>();
         Map<Object, CommentedConfigurationNode> messages = root.node("messages").childrenMap();
         for (Map.Entry<Object, CommentedConfigurationNode> message : messages.entrySet()) {
@@ -58,16 +66,32 @@ public class Config {
         return verbose;
     }
 
+    public Boolean cooldownEnabled() {
+        return cooldownEnabled;
+    }
+
+    public int getCooldown() {
+        return cooldown;
+    }
+
+    public String getSpawnWorld() {
+        return spawnWorld;
+    }
+
     public String KitClaimMessage() {
         return messageMap.get("kitclaim");
     }
 
     public String KitClaimFailMessage() {
-        return messageMap.get("kitclaim_fail");
+        return messageMap.get("kitclaim-fail");
+    }
+
+    public String KitClaimCooldownMessage() {
+        return messageMap.get("kitclaim-cooldown");
     }
 
     public String KitClaimNoAccessMessage() {
-        return messageMap.get("kitclaim_no_access");
+        return messageMap.get("kitclaim-no-access");
     }
 
 }

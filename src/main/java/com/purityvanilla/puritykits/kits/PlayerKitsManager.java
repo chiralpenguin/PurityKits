@@ -16,9 +16,11 @@ import java.util.UUID;
 public class PlayerKitsManager {
     private HashMap<UUID, HashMap<Integer, PlayerKit>> kitMap;
     private String KIT_DATA_PATH = "plugins/PurityKits/playerkits/";
+    private HashMap<UUID, Integer> cooldownMap;
 
     public PlayerKitsManager() {
         this.kitMap = new HashMap<>();
+        cooldownMap = new HashMap<>();
         new File(KIT_DATA_PATH).mkdirs();
     }
 
@@ -73,6 +75,7 @@ public class PlayerKitsManager {
     }
 
     public void loadAllPlayerKits() {
+        // When implementing global and sharable kits, this needs to filter the players if they don't have any shared kits
         List<UUID> playerIDs = new ArrayList<>();
         File[] files = new File(KIT_DATA_PATH).listFiles();
 
@@ -106,6 +109,15 @@ public class PlayerKitsManager {
                 return;
             }
 
+            if (cooldownMap.containsKey(player.getUniqueId())) {
+                player.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(
+                        PurityKits.config.KitClaimCooldownMessage()
+                ));
+
+                player.closeInventory();
+                return;
+            }
+
             ItemStack[] kitContents = getKitContents(kitOwner, kitNumber);
             player.getInventory().setContents(kitContents);
             player.updateInventory();
@@ -113,8 +125,39 @@ public class PlayerKitsManager {
             player.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(
                     PurityKits.config.KitClaimMessage().replace("{kitname}", getKitName(kitOwner, kitNumber))
             ));
+
+            if (PurityKits.config.cooldownEnabled()) {
+                cooldownMap.put(player.getUniqueId(), 0);
+            }
+
         }
 
+    }
+
+    public void updateCooldowns() {
+        List<UUID> expiredCooldowns = new ArrayList<>();
+
+        cooldownMap.forEach((player, cooldown) -> {
+            if (cooldown >= PurityKits.config.getCooldown()) {
+                expiredCooldowns.add(player);
+            }
+
+            cooldownMap.put(player, cooldown + 20);
+        });
+
+        for (UUID player : expiredCooldowns) {
+            if (PurityKits.config.verbose()) PurityKits.logger().info(String.format("Kit cooldown expired for player: %s", player));
+            cooldownMap.remove(player);
+        }
+    }
+
+    public void resetCooldown(Player player) {
+        resetCooldown(player.getUniqueId());
+    }
+
+    public void resetCooldown(UUID player) {
+        if (PurityKits.config.verbose()) PurityKits.logger().info(String.format("Kit cooldown reset for player: %s", player));
+        cooldownMap.remove(player);
     }
 
     public String getKitName(Player player, int kitNumber) {

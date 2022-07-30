@@ -12,5 +12,6 @@ public class PlayerQuitListener implements Listener {
     public void onPlayerQuit(PlayerQuitEvent e) {
         Player player = e.getPlayer();
         PurityKits.INSTANCE.getKitsManager().unloadPlayerKits(player);
+        PurityKits.INSTANCE.getKitsManager().resetCooldown(player);
     }
 }

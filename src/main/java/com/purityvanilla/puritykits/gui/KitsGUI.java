@@ -32,7 +32,7 @@ public class KitsGUI extends GUIWindow {
             inventory.setItem(slot, GUIObject.SetKitNumberMeta(slotObject.createItem(), i));
         }
 
-        inventory.setItem(28, guiObjects.get("KitRoom").createItem());
+        inventory.setItem(31, guiObjects.get("KitRoom").createItem());
 
     }
 
