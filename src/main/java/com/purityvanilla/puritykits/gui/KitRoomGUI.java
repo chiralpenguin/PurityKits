@@ -2,7 +2,6 @@ package com.purityvanilla.puritykits.gui;
 
 import com.purityvanilla.puritykits.PurityKits;
 import com.purityvanilla.puritykits.kits.KitRoomManager;
-import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -12,6 +11,7 @@ import org.bukkit.inventory.PlayerInventory;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.stream.Stream;
 
 public class KitRoomGUI extends GUIWindow {
     protected int currentPage;
@@ -34,7 +34,7 @@ public class KitRoomGUI extends GUIWindow {
 
         for (int i = 47; i < 53; i++) {
             ItemStack item = inventory.getItem(i);
-            item.addItemFlags(new ItemFlag[] { ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_POTION_EFFECTS});
+            item.addItemFlags(new ItemFlag[] { ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_ADDITIONAL_TOOLTIP});
             inventory.setItem(i, item);
         }
 
@@ -58,7 +58,10 @@ public class KitRoomGUI extends GUIWindow {
         KitRoomManager kitRoomManager = PurityKits.INSTANCE.getKitRoomManager();
         ItemStack[] contents = kitRoomManager.GetPageContents(page);
         ItemStack[] menuItems = Arrays.copyOfRange(inventory.getContents(), 45, 54);
-        inventory.setContents((ItemStack[]) ArrayUtils.addAll(contents, menuItems));
+        inventory.setContents(
+                Stream.concat(Arrays.stream(contents), Arrays.stream(menuItems))
+                        .toArray(ItemStack[]::new)
+        );
 
         currentPage = page;
     }

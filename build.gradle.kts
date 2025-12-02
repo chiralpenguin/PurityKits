@@ -4,15 +4,15 @@ plugins {
 }
 
 group = "com.purityvanilla"
-version = "1.0-SNAPSHOT"
+version = "1.1-SNAPSHOT"
 
 repositories {
     mavenCentral()
-    maven("https://papermc.io/repo/repository/maven-public/")
+    maven("https://repo.papermc.io/repository/maven-public/")
 }
 
 dependencies {
-    shadow("io.papermc.paper", "paper-api", "1.18.2-R0.1-SNAPSHOT")
+    shadow("io.papermc.paper", "paper-api", "1.21.1-R0.1-SNAPSHOT")
     implementation("org.spongepowered", "configurate-yaml", "4.0.0")
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.1")

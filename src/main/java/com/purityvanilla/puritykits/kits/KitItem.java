@@ -5,6 +5,7 @@ import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionData;
@@ -21,7 +22,8 @@ public class KitItem {
     private List<String> lore;
     private HashMap<String, Integer> enchantments;
     private PotionType potionType;
-    private int potionLevel;
+    private Integer potionLevel;
+    private Integer fireworkPower;
 
     public KitItem(String materialType, int amount, String name, List<String> lore) {
         this.materialType = materialType;
@@ -53,6 +55,10 @@ public class KitItem {
             }
         }
 
+        /*
+        Will need to update to use simpler PotionType API which combines potion type and strength
+        e.g. PotionType.LONG_REGENERATION
+         */
         if (itemMeta instanceof PotionMeta) {
             PotionMeta pMeta = (PotionMeta) itemMeta;
             PotionData pData = pMeta.getBasePotionData();
@@ -68,6 +74,10 @@ public class KitItem {
             }
 
             this.potionLevel = level;
+        }
+
+        if (itemMeta instanceof FireworkMeta) {
+            this.fireworkPower = ((FireworkMeta) itemMeta).getPower();
         }
     }
 
@@ -115,6 +125,10 @@ public class KitItem {
             }
 
             itemStack.setItemMeta(potionMeta);
+        }
+
+        if (this.fireworkPower != null) {
+            ((FireworkMeta) itemMeta).setPower(this.fireworkPower);
         }
 
         itemStack.setItemMeta(itemMeta);
